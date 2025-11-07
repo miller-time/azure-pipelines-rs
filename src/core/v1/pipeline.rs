@@ -5,10 +5,14 @@ use crate::core::v1::{extends::Extends, trigger::Trigger};
 #[derive(Serialize, Deserialize, PartialEq, Debug, Default)]
 #[serde(deny_unknown_fields)]
 pub struct Pipeline {
-    extends: Extends,
+    pub extends: Extends,
+
     pr: Option<String>,
+
     resources: Option<PipelineResources>,
+
     trigger: Option<Trigger>,
+
     #[serde(default)]
     variables: Vec<PipelineVariable>,
 }

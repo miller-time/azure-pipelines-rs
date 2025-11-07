@@ -9,13 +9,13 @@ use crate::core::v1::{depends::DependsOn, step::Step};
 #[serde(deny_unknown_fields)]
 pub struct Job {
     #[serde(rename = "job")]
-    name: Option<String>,
+    pub name: Option<String>,
 
     #[serde(rename = "displayName")]
     display_name: Option<String>,
 
     #[serde(rename = "dependsOn")]
-    depends_on: Option<DependsOn>,
+    pub depends_on: Option<DependsOn>,
 
     condition: Option<String>,
 

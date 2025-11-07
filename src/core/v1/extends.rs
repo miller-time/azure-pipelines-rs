@@ -8,7 +8,7 @@ use crate::core::v1::stage::Stage;
 #[serde(deny_unknown_fields)]
 pub struct Extends {
     template: String,
-    parameters: ExtendsParameters,
+    pub parameters: ExtendsParameters,
 }
 
 #[derive(Serialize, Deserialize, PartialEq, Debug, Default)]
@@ -23,7 +23,7 @@ pub struct ExtendsParameters {
 
     feature_flags: Option<FeatureFlags>,
 
-    stages: Vec<Stage>,
+    pub stages: Vec<Stage>,
 }
 
 #[derive(Serialize, Deserialize, PartialEq, Debug, Default)]
