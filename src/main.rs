@@ -12,7 +12,14 @@ fn main() -> Result<(), Box<dyn Error>> {
     let pipeline_path = &args[1];
     let contents = fs::read_to_string(pipeline_path)?;
 
-    let _pipeline: Pipeline = serde_yaml::from_str(&contents)?;
+    let pipeline: Pipeline = serde_yaml::from_str(&contents)?;
+
+    println!("writing ast to ast.txt");
+    fs::write("ast.txt", format!("{:#?}", pipeline))?;
+
+    println!("writing parsed pipeline to parsed.yaml");
+    let parsed = serde_yaml::to_string(&pipeline)?;
+    fs::write("parsed.yaml", parsed)?;
 
     println!("pipeline valid");
 
