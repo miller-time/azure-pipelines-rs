@@ -13,13 +13,16 @@ pub struct Extends {
 
 #[derive(Serialize, Deserialize, PartialEq, Debug, Default)]
 #[serde(deny_unknown_fields)]
+#[serde(rename_all = "camelCase")]
 pub struct ExtendsParameters {
     #[serde(default)]
     containers: HashMap<String, String>,
-    #[serde(rename = "customBuildTags", default)]
+
+    #[serde(default)]
     custom_build_tags: Vec<String>,
-    #[serde(rename = "featureFlags")]
+
     feature_flags: Option<FeatureFlags>,
+
     stages: Vec<Stage>,
 }
 
@@ -31,8 +34,8 @@ pub struct FeatureFlags {
 
 #[derive(Serialize, Deserialize, PartialEq, Debug, Default)]
 #[serde(deny_unknown_fields)]
+#[serde(rename_all = "camelCase")]
 pub struct GolangFeatureFlags {
-    #[serde(rename = "internalModuleProxy")]
     internal_module_proxy: GoProxy,
 }
 

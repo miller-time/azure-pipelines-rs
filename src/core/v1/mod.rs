@@ -1,3 +1,4 @@
+pub mod depends;
 pub mod extends;
 pub mod job;
 pub mod pipeline;
