@@ -90,6 +90,10 @@ fn validate_job_depends(pipeline: &Pipeline) -> Result<(), String> {
             }
             if let Some(name) = &job.name {
                 job_names.insert(name.clone());
+            } else if let Some(name) = job.parameters.get("jobNameOverride") {
+                if let Some(name) = name.as_str() {
+                    job_names.insert(name.to_string());
+                }
             }
         }
     }

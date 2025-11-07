@@ -30,5 +30,5 @@ pub struct Job {
     template: Option<String>,
 
     #[serde(default)]
-    parameters: HashMap<String, Value>,
+    pub parameters: HashMap<String, Value>,
 }
