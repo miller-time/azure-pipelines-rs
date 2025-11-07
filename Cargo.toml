@@ -1,6 +1,12 @@
 [package]
 name = "azure-pipelines-rs"
+description = "Validate your Azure Pipeline YAML"
 version = "0.1.0"
+repository = "https://github.com/miller-time/azure-pipelines-rs"
+documentation = "https://docs.rs/azure-pipelines-rs"
+readme = "README.md"
+license = "MIT"
+authors = ["Russell Cousineau <miller.time.baby@gmail.com>"]
 edition = "2024"
 
 [dependencies]
