@@ -1,0 +1,50 @@
+pr: none
+
+trigger:
+  branches:
+    include:
+    - main
+  paths:
+    exclude:
+    - '*.md'
+
+variables:
+- group: common
+
+- name: favoriteColor
+  value: green
+
+resources:
+  repositories:
+  - repository: tools
+    type: git
+    name: tools
+    ref: refs/heads/main
+
+extends:
+  template: entrypoint.yml@tools
+  parameters:
+    customBuildTags:
+    - Rust.Rocks
+    containers:
+      rust: latest
+    featureFlags:
+      golang:
+        internalModuleProxy:
+          enabled: false
+
+    stages:
+    - stage: test
+      displayName: Run Tests
+      jobs:
+        - job: test
+          displayName: Run Tests
+          steps:
+          - task: Bash@3
+            displayName: Run Tests
+            target:
+              container: rust
+            inputs:
+              targetType: inline
+              script: |
+                cargo test
