@@ -29,7 +29,7 @@ pub struct CheckoutStep {
     /// Configures checkout for the specified repository
     pub checkout: Option<String>,
 
-    /// Set to 'true' to leave the OAuth token in the Git config after the
+    /// Set to `'true'` to leave the OAuth token in the Git config after the
     /// initial fetch. The default is not to leave it.
     #[serde(default)]
     pub persist_credentials: bool,
@@ -75,7 +75,7 @@ pub struct TaskStep {
 #[derive(Serialize, Deserialize, PartialEq, Debug, Default)]
 #[serde(deny_unknown_fields)]
 pub struct StepTarget {
-    /// Container to target (or 'host' for host machine)
+    /// Container to target (or `'host'` for host machine)
     pub container: String,
 }
 

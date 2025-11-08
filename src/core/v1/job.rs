@@ -26,7 +26,7 @@ pub enum Job {
 #[serde(deny_unknown_fields)]
 pub struct JobWithSteps {
     /// ID of the job. Acceptable values: Valid names may only contain
-    /// alphanumeric characters and '_' and may not start with a number.
+    /// alphanumeric characters and `_` and may not start with a number.
     #[serde(rename = "job")]
     pub name: Option<String>,
 
