@@ -6,3 +6,6 @@
 
 /// The Azure Pipeline type definitions
 pub mod core;
+
+/// Support for pipeline templates
+pub mod templates;

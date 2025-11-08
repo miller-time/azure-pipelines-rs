@@ -1,7 +1,8 @@
 use std::{collections::HashSet, env, error::Error, fs, process};
 
-use azure_pipelines_rs::core::v1::{
-    depends::DependsOn, job::Job, pipeline::Pipeline, stage::Stage,
+use azure_pipelines_rs::{
+    core::v1::{depends::DependsOn, job::Job, pipeline::Pipeline, stage::Stage},
+    templates::{entrypoints::example::ExampleEntrypoint, parameterized::Parameterized},
 };
 
 fn main() -> Result<(), Box<dyn Error>> {
@@ -31,9 +32,10 @@ fn main() -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-fn validate_stage_depends(pipeline: &Pipeline) -> Result<(), String> {
+fn validate_stage_depends(pipeline: &Pipeline) -> Result<(), Box<dyn Error>> {
     let mut stage_names = HashSet::new();
-    for stage in &pipeline.extends.parameters.stages {
+    let parameters = ExampleEntrypoint::get_parameters(&pipeline.extends.parameters)?;
+    for stage in parameters.stages {
         if let Stage::Stage(stage) = stage {
             if let Some(depends_on) = &stage.depends_on {
                 match depends_on {
@@ -42,7 +44,8 @@ fn validate_stage_depends(pipeline: &Pipeline) -> Result<(), String> {
                             return Err(format!(
                                 "stage {:?} depends on non-existent stage {other}",
                                 stage.name
-                            ));
+                            )
+                            .into());
                         }
                     }
                     DependsOn::Multi(others) => {
@@ -51,7 +54,8 @@ fn validate_stage_depends(pipeline: &Pipeline) -> Result<(), String> {
                                 return Err(format!(
                                     "stage {:?} depends on non-existent stage {other}",
                                     stage.name
-                                ));
+                                )
+                                .into());
                             }
                         }
                     }
@@ -66,8 +70,9 @@ fn validate_stage_depends(pipeline: &Pipeline) -> Result<(), String> {
     Ok(())
 }
 
-fn validate_job_depends(pipeline: &Pipeline) -> Result<(), String> {
-    for stage in &pipeline.extends.parameters.stages {
+fn validate_job_depends(pipeline: &Pipeline) -> Result<(), Box<dyn Error>> {
+    let parameters = ExampleEntrypoint::get_parameters(&pipeline.extends.parameters)?;
+    for stage in parameters.stages {
         if let Stage::Stage(stage) = stage {
             let mut job_names = HashSet::new();
             for job in &stage.jobs {
@@ -80,7 +85,8 @@ fn validate_job_depends(pipeline: &Pipeline) -> Result<(), String> {
                                         return Err(format!(
                                             "job {:?} depends on non-existent job {other}",
                                             job.name
-                                        ));
+                                        )
+                                        .into());
                                     }
                                 }
                                 DependsOn::Multi(others) => {
@@ -89,7 +95,8 @@ fn validate_job_depends(pipeline: &Pipeline) -> Result<(), String> {
                                             return Err(format!(
                                                 "job {:?} depends on non-existent job {other}",
                                                 job.name
-                                            ));
+                                            )
+                                            .into());
                                         }
                                     }
                                 }
