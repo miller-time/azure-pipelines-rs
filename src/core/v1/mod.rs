@@ -1,3 +1,5 @@
+//! The current (only) version
+
 pub mod depends;
 pub mod extends;
 pub mod job;
