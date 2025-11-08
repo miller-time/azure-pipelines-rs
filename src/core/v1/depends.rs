@@ -1,3 +1,5 @@
+//! The `dependsOn` property accepts `string` or `[ string ]`
+
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, PartialEq, Debug)]
