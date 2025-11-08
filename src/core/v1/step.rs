@@ -25,6 +25,7 @@ pub enum Step {
 /// <https://learn.microsoft.com/en-us/azure/devops/pipelines/yaml-schema/steps-checkout?view=azure-pipelines>
 #[derive(Serialize, Deserialize, PartialEq, Debug, Default)]
 #[serde(deny_unknown_fields)]
+#[serde(rename_all = "camelCase")]
 pub struct CheckoutStep {
     /// Configures checkout for the specified repository
     pub checkout: Option<String>,
