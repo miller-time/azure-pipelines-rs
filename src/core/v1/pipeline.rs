@@ -30,43 +30,90 @@ pub struct Pipeline {
 
     /// Variables for this pipeline
     #[serde(default)]
-    variables: Vec<PipelineVariable>,
+    pub variables: Vec<PipelineVariable>,
 }
 
+/// Resources specifies builds, repositories, pipelines, and other resources
+/// used by the pipeline
+///
+/// <https://learn.microsoft.com/en-us/azure/devops/pipelines/yaml-schema/resources?view=azure-pipelines>
 #[derive(Serialize, Deserialize, PartialEq, Debug, Default)]
 #[serde(deny_unknown_fields)]
 pub struct PipelineResources {
+    /// List of container images
     #[serde(default)]
-    containers: Vec<PipelineContainer>,
+    pub containers: Vec<PipelineContainer>,
+
+    /// List of repository resources
     #[serde(default)]
-    repositories: Vec<PipelineRepository>,
+    pub repositories: Vec<PipelineRepository>,
 }
 
+/// A container resource references a container image
 #[derive(Serialize, Deserialize, PartialEq, Debug, Default)]
 #[serde(deny_unknown_fields)]
 pub struct PipelineContainer {
+    /// ID for the container. Acceptable values: `[-_A-Za-z0-9]*`
     #[serde(rename = "container")]
-    name: String,
-    endpoint: Option<String>,
-    image: String,
+    pub name: String,
+
+    /// ID of the service endpoint connecting to a private container registry
+    pub endpoint: Option<String>,
+
+    /// Container image tag
+    pub image: String,
 }
 
+/// The `repository` keyword lets you specify an external repository. Use a
+/// repository resource to reference an additional repository in your pipeline.
 #[derive(Serialize, Deserialize, PartialEq, Debug, Default)]
 #[serde(deny_unknown_fields)]
 pub struct PipelineRepository {
+    /// Alias for the specified repository. Acceptable values: `[-_A-Za-z0-9]*`
     #[serde(rename = "repository")]
-    alias: String,
+    pub alias: String,
+
+    /// Type of repository: git, github, githubenterprise, and bitbucket
     #[serde(rename = "type")]
-    repository_type: String,
-    name: String,
+    pub repository_type: String,
+
+    /// Repository name. Format depends on `repository_type` ("type")
+    pub name: String,
+
+    /// ref name to checkout; defaults to 'refs/heads/main'. The branch checked
+    /// out by default whenever the resource trigger fires
     #[serde(rename = "ref")]
-    repository_ref: String,
+    pub repository_ref: String,
 }
 
+/// Define variables using name/value pairs
+///
+/// <https://learn.microsoft.com/en-us/azure/devops/pipelines/yaml-schema/variables?view=azure-pipelines>
+#[derive(Serialize, Deserialize, PartialEq, Debug)]
+#[serde(untagged)]
+pub enum PipelineVariable {
+    /// Reference variables from a variable group
+    Group(VariableGroup),
+
+    /// Define variables using name and full syntax
+    Variable(ValueVariable),
+}
+
+/// Reference variables from a variable group
 #[derive(Serialize, Deserialize, PartialEq, Debug, Default)]
 #[serde(deny_unknown_fields)]
-pub struct PipelineVariable {
-    group: Option<String>,
-    name: Option<String>,
-    value: Option<String>,
+pub struct VariableGroup {
+    /// Variable group name
+    pub group: String,
+}
+
+/// Define variables using name and full syntax
+#[derive(Serialize, Deserialize, PartialEq, Debug, Default)]
+#[serde(deny_unknown_fields)]
+pub struct ValueVariable {
+    /// Variable name
+    pub name: String,
+
+    /// Variable value
+    pub value: String,
 }
