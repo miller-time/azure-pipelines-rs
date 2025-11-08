@@ -43,7 +43,7 @@ pub struct ExtendsParameters {
 #[serde(deny_unknown_fields)]
 pub struct FeatureFlags {
     /// Enable optional pipeline features for Go
-    golang: GolangFeatureFlags,
+    pub golang: GolangFeatureFlags,
 }
 
 /// Enable optional pipeline features for Go
@@ -52,7 +52,7 @@ pub struct FeatureFlags {
 #[serde(rename_all = "camelCase")]
 pub struct GolangFeatureFlags {
     /// Enable Go module proxy
-    internal_module_proxy: GoProxy,
+    pub internal_module_proxy: GoProxy,
 }
 
 /// Enable Go module proxy
@@ -60,5 +60,5 @@ pub struct GolangFeatureFlags {
 #[serde(deny_unknown_fields)]
 pub struct GoProxy {
     /// Enable Go module proxy
-    enabled: bool,
+    pub enabled: bool,
 }

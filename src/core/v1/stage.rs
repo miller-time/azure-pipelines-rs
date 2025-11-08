@@ -68,5 +68,5 @@ pub struct StageWithTemplate {
 
     /// Parameters used in a stage template
     #[serde(default)]
-    parameters: HashMap<String, Value>,
+    pub parameters: HashMap<String, Value>,
 }
