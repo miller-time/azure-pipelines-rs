@@ -9,3 +9,6 @@ pub mod core;
 
 /// Support for pipeline templates
 pub mod templates;
+
+/// Validation methods
+pub mod validator;

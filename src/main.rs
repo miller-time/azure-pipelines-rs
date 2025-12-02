@@ -1,8 +1,9 @@
-use std::{collections::HashSet, env, error::Error, fs, process};
+use std::{env, error::Error, fs, process};
 
 use azure_pipelines_rs::{
-    core::v1::{depends::DependsOn, job::Job, pipeline::Pipeline, stage::Stage},
+    core::v1::pipeline::Pipeline,
     templates::{entrypoints::example::ExampleEntrypoint, parameterized::Parameterized},
+    validator::dependencies::validate_dependencies,
 };
 
 fn main() -> Result<(), Box<dyn Error>> {
@@ -24,99 +25,10 @@ fn main() -> Result<(), Box<dyn Error>> {
     let parsed = serde_yaml::to_string(&pipeline)?;
     fs::write("parsed.yaml", parsed)?;
 
-    validate_stage_depends(&pipeline)?;
-    validate_job_depends(&pipeline)?;
+    let parameters = ExampleEntrypoint::get_parameters(&pipeline.extends.parameters)?;
+    validate_dependencies(&parameters.stages)?;
 
     println!("pipeline valid");
-
-    Ok(())
-}
-
-fn validate_stage_depends(pipeline: &Pipeline) -> Result<(), Box<dyn Error>> {
-    let mut stage_names = HashSet::new();
-    let parameters = ExampleEntrypoint::get_parameters(&pipeline.extends.parameters)?;
-    for stage in parameters.stages {
-        if let Stage::Stage(stage) = stage {
-            if let Some(depends_on) = &stage.depends_on {
-                match depends_on {
-                    DependsOn::Single(other) => {
-                        if !stage_names.contains(other) {
-                            return Err(format!(
-                                "stage {:?} depends on non-existent stage {other}",
-                                stage.name
-                            )
-                            .into());
-                        }
-                    }
-                    DependsOn::Multi(others) => {
-                        for other in others {
-                            if !stage_names.contains(other) {
-                                return Err(format!(
-                                    "stage {:?} depends on non-existent stage {other}",
-                                    stage.name
-                                )
-                                .into());
-                            }
-                        }
-                    }
-                }
-            }
-            if let Some(name) = &stage.name {
-                stage_names.insert(name.clone());
-            }
-        }
-    }
-
-    Ok(())
-}
-
-fn validate_job_depends(pipeline: &Pipeline) -> Result<(), Box<dyn Error>> {
-    let parameters = ExampleEntrypoint::get_parameters(&pipeline.extends.parameters)?;
-    for stage in parameters.stages {
-        if let Stage::Stage(stage) = stage {
-            let mut job_names = HashSet::new();
-            for job in &stage.jobs {
-                match job {
-                    Job::Job(job) => {
-                        if let Some(depends_on) = &job.depends_on {
-                            match depends_on {
-                                DependsOn::Single(other) => {
-                                    if !job_names.contains(other) {
-                                        return Err(format!(
-                                            "job {:?} depends on non-existent job {other}",
-                                            job.name
-                                        )
-                                        .into());
-                                    }
-                                }
-                                DependsOn::Multi(others) => {
-                                    for other in others {
-                                        if !job_names.contains(other) {
-                                            return Err(format!(
-                                                "job {:?} depends on non-existent job {other}",
-                                                job.name
-                                            )
-                                            .into());
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        if let Some(name) = &job.name {
-                            job_names.insert(name.clone());
-                        }
-                    }
-                    Job::Template(job) => {
-                        if let Some(name) = job.parameters.get("jobNameOverride") {
-                            if let Some(name) = name.as_str() {
-                                job_names.insert(name.to_string());
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
 
     Ok(())
 }
