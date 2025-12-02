@@ -3,8 +3,10 @@ use std::{collections::HashMap, error::Error};
 use serde::{Deserialize, Serialize};
 use serde_yaml::Value;
 
-use crate::{core::v1::stage::Stage, templates::parameterized::Parameterized};
+use azure_pipelines_rs::{core::v1::stage::Stage, templates::parameterized::Parameterized};
 
+/// Define an Entrypoint type that has parameters and implement the
+/// `Parameterized` trait
 #[derive(Default)]
 pub struct ExampleEntrypoint {}
 
@@ -20,8 +22,13 @@ impl Parameterized for ExampleEntrypoint {
     }
 }
 
+/// Define a type for the Entrypoint Parameters
 #[derive(Serialize, Deserialize, PartialEq, Debug, Default)]
 #[serde(deny_unknown_fields)]
+#[serde(rename_all = "camelCase")]
 pub struct ExampleEntrypointParameters {
+    pub custom_build_tags: Vec<String>,
+    pub containers: HashMap<String, String>,
+    pub feature_flags: HashMap<String, Value>,
     pub stages: Vec<Stage>,
 }
