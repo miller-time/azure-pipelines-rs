@@ -60,7 +60,7 @@ pub struct TaskStep {
     pub name: Option<String>,
 
     /// Number of retries if the task fails
-    pub retry_count_on_task_failure: Option<i32>,
+    pub retry_count_on_task_failure: Option<Value>,
 
     /// Environment in which to run this task
     pub target: Option<StepTarget>,

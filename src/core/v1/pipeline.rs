@@ -173,5 +173,5 @@ pub struct PipelineParameter {
 
     /// Allowed list of values (for some data types)
     #[serde(default)]
-    pub values: Vec<String>,
+    pub values: Vec<Value>,
 }

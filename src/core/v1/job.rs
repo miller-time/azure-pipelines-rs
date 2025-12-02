@@ -46,7 +46,7 @@ pub struct JobWithSteps {
 
     /// Time to wait for this job to complete before the server kills it
     #[serde(rename = "timeoutInMinutes")]
-    pub timeout_in_minutes: Option<String>,
+    pub timeout_in_minutes: Option<Value>,
 
     /// Job-specific variables
     #[serde(default)]
