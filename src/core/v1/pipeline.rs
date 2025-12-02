@@ -3,6 +3,7 @@
 //! <https://learn.microsoft.com/en-us/azure/devops/pipelines/yaml-schema/pipeline?view=azure-pipelines#pipelineextends>
 
 use serde::{Deserialize, Serialize};
+use serde_yaml::Value;
 
 use crate::core::v1::{extends::Extends, trigger::Trigger};
 
@@ -15,6 +16,9 @@ pub struct Pipeline {
 
     /// Pipeline run number
     pub name: Option<String>,
+
+    /// The runtime parameters for this pipeline.
+    pub parameters: Vec<PipelineParameter>,
 
     /// Pool where jobs in this pipeline will run unless otherwise specified
     pub pool: Option<String>,
@@ -116,4 +120,29 @@ pub struct ValueVariable {
 
     /// Variable value
     pub value: String,
+}
+
+/// A parameter represents a value passed to a pipeline.
+///
+/// <https://learn.microsoft.com/en-us/azure/devops/pipelines/yaml-schema/parameters-parameter?view=azure-pipelines>
+#[derive(Serialize, Deserialize, PartialEq, Debug)]
+#[serde(deny_unknown_fields)]
+pub struct PipelineParameter {
+    /// Parameter name
+    pub name: String,
+
+    /// Human-readable name for the parameter
+    #[serde(rename = "displayName")]
+    pub display_name: Option<String>,
+
+    /// Parameter type
+    #[serde(rename = "type")]
+    pub parameter_type: String,
+
+    /// Default value -- if there is no default, then it's required for the user
+    /// to specify a value at runtime
+    pub default: Option<Value>,
+
+    /// Allowed list of values (for some data types)
+    pub values: Vec<String>,
 }
