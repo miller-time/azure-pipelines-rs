@@ -20,10 +20,10 @@ pub enum Trigger {
 #[serde(deny_unknown_fields)]
 pub struct PipelineTrigger {
     /// Branch names to include or exclude for triggering a run
-    branches: Option<TriggerItem>,
+    pub branches: Option<TriggerItem>,
 
     /// File paths to include or exclude for triggering a run
-    paths: Option<TriggerItem>,
+    pub paths: Option<TriggerItem>,
 }
 
 /// Lists of items to include or exclude for trigger events
@@ -32,9 +32,28 @@ pub struct PipelineTrigger {
 pub struct TriggerItem {
     /// List of items to include
     #[serde(default)]
-    include: Vec<String>,
+    pub include: Vec<String>,
 
     /// List of items to exclude
     #[serde(default)]
-    exclude: Vec<String>,
+    pub exclude: Vec<String>,
+}
+
+/// Specify `none` to disable, `true` to include all branches, or use the full
+/// syntax
+#[derive(Serialize, Deserialize, PartialEq, Debug)]
+#[serde(untagged)]
+pub enum ResourceTrigger {
+    Simple(String),
+    Full(PipelineResourceTrigger),
+}
+
+#[derive(Serialize, Deserialize, PartialEq, Debug, Default)]
+#[serde(deny_unknown_fields)]
+pub struct PipelineResourceTrigger {
+    /// Branches to include or exclude for triggering a run
+    pub branches: Option<TriggerItem>,
+
+    /// List of tags that when matched will trigger the pipeline
+    pub tags: Option<TriggerItem>,
 }

@@ -5,7 +5,10 @@
 use serde::{Deserialize, Serialize};
 use serde_yaml::Value;
 
-use crate::core::v1::{extends::Extends, trigger::Trigger};
+use crate::core::v1::{
+    extends::Extends,
+    trigger::{ResourceTrigger, Trigger},
+};
 
 /// Pipeline that extends a template
 #[derive(Serialize, Deserialize, PartialEq, Debug, Default)]
@@ -47,17 +50,21 @@ pub struct Pipeline {
 pub struct PipelineResources {
     /// List of container images
     #[serde(default)]
-    pub containers: Vec<PipelineContainer>,
+    pub containers: Vec<ContainerResource>,
+
+    /// List of pipeline resources
+    #[serde(default)]
+    pub pipelines: Vec<PipelineResource>,
 
     /// List of repository resources
     #[serde(default)]
-    pub repositories: Vec<PipelineRepository>,
+    pub repositories: Vec<RepositoryResource>,
 }
 
 /// A container resource references a container image
 #[derive(Serialize, Deserialize, PartialEq, Debug, Default)]
 #[serde(deny_unknown_fields)]
-pub struct PipelineContainer {
+pub struct ContainerResource {
     /// ID for the container. Acceptable values: `[-_A-Za-z0-9]*`
     #[serde(rename = "container")]
     pub name: String,
@@ -69,11 +76,31 @@ pub struct PipelineContainer {
     pub image: String,
 }
 
+/// If you have an Azure Pipeline that produces artifacts, your pipeline can
+/// consume the artifacts by defining a pipeline resource. In Azure DevOps
+/// Server 2020 and higher, you can also enable pipeline completion triggers
+/// using a pipeline resource.
+///
+/// <https://learn.microsoft.com/en-us/azure/devops/pipelines/yaml-schema/resources-pipelines-pipeline?view=azure-pipelines>
+#[derive(Serialize, Deserialize, PartialEq, Debug, Default)]
+#[serde(deny_unknown_fields)]
+pub struct PipelineResource {
+    /// ID of the pipeline resource
+    pub pipeline: String,
+
+    /// Name of the pipeline that produces the artifact
+    pub source: String,
+
+    /// Specify `none` to disable, `true` to include all branches, or use the
+    /// full syntax
+    pub trigger: Option<ResourceTrigger>,
+}
+
 /// The `repository` keyword lets you specify an external repository. Use a
 /// repository resource to reference an additional repository in your pipeline.
 #[derive(Serialize, Deserialize, PartialEq, Debug, Default)]
 #[serde(deny_unknown_fields)]
-pub struct PipelineRepository {
+pub struct RepositoryResource {
     /// Alias for the specified repository. Acceptable values: `[-_A-Za-z0-9]*`
     #[serde(rename = "repository")]
     pub alias: String,
