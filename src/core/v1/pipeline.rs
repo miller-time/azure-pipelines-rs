@@ -18,6 +18,7 @@ pub struct Pipeline {
     pub name: Option<String>,
 
     /// The runtime parameters for this pipeline.
+    #[serde(default)]
     pub parameters: Vec<PipelineParameter>,
 
     /// Pool where jobs in this pipeline will run unless otherwise specified
@@ -144,5 +145,6 @@ pub struct PipelineParameter {
     pub default: Option<Value>,
 
     /// Allowed list of values (for some data types)
+    #[serde(default)]
     pub values: Vec<String>,
 }
