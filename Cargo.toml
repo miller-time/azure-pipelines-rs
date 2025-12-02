@@ -1,7 +1,7 @@
 [package]
 name = "azure-pipelines-rs"
 description = "Validate your Azure Pipeline YAML"
-version = "0.7.0"
+version = "0.7.1"
 repository = "https://github.com/miller-time/azure-pipelines-rs"
 documentation = "https://docs.rs/azure-pipelines-rs"
 readme = "README.md"
